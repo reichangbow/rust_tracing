@@ -10,7 +10,6 @@ use tracing_subscriber::fmt::{
     FmtContext, FormattedFields,
 };
 use tracing_subscriber::registry::LookupSpan;
-use tracing_subscriber::fmt::time;
 struct MyFormatter;
 
 // MyFormatter
@@ -89,13 +88,11 @@ fn init_tracing() -> tracing_appender::non_blocking::WorkerGuard {
         #[cfg(unix)]
         None,
     );
-let log_writer = tracing_appender::rolling::hourly("./Log", "prefix.log");
     let (non_blocking, guard) = tracing_appender::non_blocking(log_writer);
     tracing_subscriber::fmt()
         .with_writer(non_blocking)
         .with_max_level(tracing::Level::DEBUG)
-        .with_timer(time::SystemTime)    
+        .event_format(MyFormatter)
         .init();
-    // .event_format(MyFormatter)
     guard
 }
